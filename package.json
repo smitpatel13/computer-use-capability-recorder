@@ -1,0 +1,24 @@
+{
+  "name": "capability-recorder",
+  "version": "0.1.0",
+  "description": "Computer-use automation prototype: LLM discovery to deterministic replay.",
+  "type": "module",
+  "scripts": {
+    "demo:discover": "node src/cli.js discover --goal \"look up member 12345 and read their current savings balance\" --target http://127.0.0.1:4173/app --out evidence/member-balance.capability.json",
+    "demo:replay": "node src/cli.js replay --artifact evidence/member-balance.capability.json --input memberId=12345",
+    "demo:not-found": "node src/cli.js replay --artifact evidence/member-balance.capability.json --input memberId=00000",
+    "demo:escalate": "node src/cli.js replay --artifact evidence/member-balance.capability.json --input memberId=99999",
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": [
+    "computer-use",
+    "automation",
+    "playwright",
+    "llm"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.54.0"
+  },
+  "devDependencies": {}
+}

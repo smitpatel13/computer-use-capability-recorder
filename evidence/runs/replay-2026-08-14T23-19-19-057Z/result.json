@@ -1,0 +1,6 @@
+{
+  "status": "business_not_found",
+  "outputs": {
+    "reason": "No member matched the supplied memberId."
+  }
+}
