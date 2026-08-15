@@ -80,4 +80,4 @@ npm test
 
 ## Notes
 
-The checked-in evidence can be regenerated locally. The offline planner exists so tests and reviewer setup do not require paid model access. For final submission, regenerate the discovery evidence with `--llm openai`; the artifact provenance records which planner produced it.
+The checked-in discovery evidence was generated with `--llm openai`; the artifact provenance records that planner. The offline planner exists so tests and reviewer setup do not require paid model access.
