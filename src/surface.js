@@ -66,7 +66,7 @@ export class BrowserSurface {
 
   async resolve(target) {
     const errors = [];
-    for (const candidate of target.candidates || []) {
+    for (const candidate of normalizeTargetCandidates(target)) {
       try {
         const locator = this.locatorFor(candidate).first();
         await locator.waitFor({ state: "visible", timeout: 1500 });
@@ -112,4 +112,29 @@ export class BrowserSurface {
     const locator = await this.resolve(target);
     return (await locator.innerText()).trim();
   }
+}
+
+export function normalizeTargetCandidates(target = {}) {
+  return (target.candidates || [target]).flatMap((candidate) => {
+    if (!candidate || typeof candidate !== "object") return [];
+    if (candidate.kind) return [candidate];
+    const normalized = [];
+    if (candidate.id) normalized.push({ kind: "css", value: `#${cssEscape(candidate.id)}` });
+    if (candidate.name) normalized.push({ kind: "css", value: `[name="${cssAttrEscape(candidate.name)}"]` });
+    if (candidate.tag && candidate.text) {
+      normalized.push({ kind: "text", value: candidate.text });
+    }
+    if (candidate.tag && candidate.name && candidate.tag.toLowerCase() === "input") {
+      normalized.push({ kind: "label", value: candidate.name });
+    }
+    return normalized.length ? normalized : [candidate];
+  });
+}
+
+function cssEscape(value) {
+  return String(value).replace(/([ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, "\\$1");
+}
+
+function cssAttrEscape(value) {
+  return String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
