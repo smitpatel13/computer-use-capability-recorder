@@ -1,0 +1,12 @@
+{"ts":"2026-08-15T00:20:11.254Z","runId":"replay-2026-08-15T00-20-11-118Z","type":"replay.started","data":{"artifact":{"name":"lookup_member_savings_balance","version":"1.0.0","status":"draft","summary":"Looks up a member by ID and returns the savings balance from a legacy UI.","owner":"automation-platform"},"inputs":{"memberId":"00000"}}}
+{"ts":"2026-08-15T00:20:11.255Z","runId":"replay-2026-08-15T00-20-11-118Z","type":"replay.step_started","data":{"stepId":"open-search","type":"navigate"}}
+{"ts":"2026-08-15T00:20:11.255Z","runId":"replay-2026-08-15T00-20-11-118Z","type":"surface.action","data":{"type":"navigate","url":"http://127.0.0.1:4173/app"}}
+{"ts":"2026-08-15T00:20:11.271Z","runId":"replay-2026-08-15T00-20-11-118Z","type":"replay.step_completed","data":{"stepId":"open-search"}}
+{"ts":"2026-08-15T00:20:11.271Z","runId":"replay-2026-08-15T00-20-11-118Z","type":"replay.step_started","data":{"stepId":"enter-member-id","type":"type"}}
+{"ts":"2026-08-15T00:20:11.271Z","runId":"replay-2026-08-15T00-20-11-118Z","type":"surface.action","data":{"type":"type","target":{"strategy":"semantic-first","candidates":[{"kind":"label","value":"Member ID"},{"kind":"role","role":"textbox","name":"Member ID"},{"kind":"css","value":"input[name='memberId']"}],"robustnessNotes":"Prefer label/accessibility targeting, with CSS name fallback for hostile legacy markup."},"value":"00000"}}
+{"ts":"2026-08-15T00:20:11.280Z","runId":"replay-2026-08-15T00-20-11-118Z","type":"replay.step_completed","data":{"stepId":"enter-member-id"}}
+{"ts":"2026-08-15T00:20:11.280Z","runId":"replay-2026-08-15T00-20-11-118Z","type":"replay.step_started","data":{"stepId":"submit-search","type":"click"}}
+{"ts":"2026-08-15T00:20:11.280Z","runId":"replay-2026-08-15T00-20-11-118Z","type":"surface.action","data":{"type":"click","target":{"strategy":"semantic-first","candidates":[{"kind":"role","role":"button","name":"Search"},{"kind":"text","value":"Search"},{"kind":"css","value":"button[type='submit']"}]}}}
+{"ts":"2026-08-15T00:20:11.329Z","runId":"replay-2026-08-15T00-20-11-118Z","type":"replay.step_completed","data":{"stepId":"submit-search"}}
+{"ts":"2026-08-15T00:20:11.329Z","runId":"replay-2026-08-15T00-20-11-118Z","type":"replay.step_started","data":{"stepId":"extract-result","type":"extract"}}
+{"ts":"2026-08-15T00:20:11.330Z","runId":"replay-2026-08-15T00-20-11-118Z","type":"replay.completed","data":{"status":"business_not_found","outputs":{"reason":"No member matched the supplied memberId."}}}

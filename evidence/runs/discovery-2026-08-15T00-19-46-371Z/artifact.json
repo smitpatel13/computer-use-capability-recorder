@@ -23,7 +23,10 @@
       }
     },
     "outputs": {
-      "memberName": "[REDACTED]",
+      "memberName": {
+        "type": "string",
+        "pii": true
+      },
       "memberStatus": {
         "type": "string",
         "pii": false
@@ -90,7 +93,7 @@
             "value": "input[name='memberId']"
           }
         ],
-        "robustnessNotes": "[REDACTED]"
+        "robustnessNotes": "Prefer label/accessibility targeting, with CSS name fallback for hostile legacy markup."
       }
     },
     {
@@ -127,7 +130,16 @@
       "id": "extract-result",
       "type": "extract",
       "outputs": {
-        "memberName": "[REDACTED]",
+        "memberName": {
+          "target": {
+            "candidates": [
+              {
+                "kind": "css",
+                "value": "[data-field='member-name']"
+              }
+            ]
+          }
+        },
         "memberStatus": {
           "target": {
             "candidates": [
@@ -175,9 +187,9 @@
       }
     }
   ],
-  "createdAt": "2026-08-14T23:18:54.726Z",
+  "createdAt": "2026-08-15T00:19:46.891Z",
   "provenance": {
-    "discoveryRunId": "discovery-2026-08-14T23-18-54-169Z",
+    "discoveryRunId": "discovery-2026-08-15T00-19-46-371Z",
     "planner": "offline",
     "transcriptRedacted": true,
     "note": "Offline planner run; rerun with --llm openai for required live LLM evidence."

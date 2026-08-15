@@ -187,9 +187,9 @@
       }
     }
   ],
-  "createdAt": "2026-08-14T23:18:54.726Z",
+  "createdAt": "2026-08-15T00:19:46.891Z",
   "provenance": {
-    "discoveryRunId": "discovery-2026-08-14T23-18-54-169Z",
+    "discoveryRunId": "discovery-2026-08-15T00-19-46-371Z",
     "planner": "offline",
     "transcriptRedacted": true,
     "note": "Offline planner run; rerun with --llm openai for required live LLM evidence."
