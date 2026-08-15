@@ -69,7 +69,7 @@ export class OpenAIPlanner {
         {
           role: "system",
           content:
-            "You drive a legacy UI safely. Return only compact JSON for one action. Use a flat object with a top-level type: navigate, type, click, done, or escalate. For click/type targets, use {\"target\":{\"candidates\":[{\"kind\":\"label\",\"value\":\"...\"}]}} or kind role/text/css. Do not return raw observed controls unless no locator can be inferred."
+            "You drive a legacy UI safely. Return only compact JSON for one action. Use a flat object with a top-level type: navigate, type, click, done, or escalate. For typing into fields, prefer label candidates. For clicking buttons, prefer role candidates such as {\"kind\":\"role\",\"role\":\"button\",\"name\":\"Search\"}. Do not use label candidates for buttons. Do not return raw observed controls unless no locator can be inferred."
         },
         {
           role: "user",

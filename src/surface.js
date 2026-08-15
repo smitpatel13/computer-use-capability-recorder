@@ -47,12 +47,12 @@ export class BrowserSurface {
       return;
     }
     if (action.type === "type") {
-      const locator = await this.resolve(action.target);
+      const locator = await this.resolve(action.target, action.type);
       await locator.fill(action.value);
       return;
     }
     if (action.type === "click") {
-      const locator = await this.resolve(action.target);
+      const locator = await this.resolve(action.target, action.type);
       await locator.click();
       await this.page.waitForLoadState("domcontentloaded").catch(() => {});
       return;
@@ -64,9 +64,9 @@ export class BrowserSurface {
     throw new Error(`Unsupported action: ${action.type}`);
   }
 
-  async resolve(target) {
+  async resolve(target, actionType) {
     const errors = [];
-    for (const candidate of normalizeTargetCandidates(target)) {
+    for (const candidate of normalizeTargetCandidates(target, actionType)) {
       try {
         const locator = this.locatorFor(candidate).first();
         await locator.waitFor({ state: "visible", timeout: 1500 });
@@ -114,10 +114,19 @@ export class BrowserSurface {
   }
 }
 
-export function normalizeTargetCandidates(target = {}) {
+export function normalizeTargetCandidates(target = {}, actionType) {
   return (target.candidates || [target]).flatMap((candidate) => {
     if (!candidate || typeof candidate !== "object") return [];
-    if (candidate.kind) return [candidate];
+    if (candidate.kind) {
+      if (actionType === "click" && candidate.kind === "label") {
+        return [
+          { kind: "role", role: "button", name: candidate.value },
+          { kind: "text", value: candidate.value },
+          candidate
+        ];
+      }
+      return [candidate];
+    }
     const normalized = [];
     if (candidate.id) normalized.push({ kind: "css", value: `#${cssEscape(candidate.id)}` });
     if (candidate.name) normalized.push({ kind: "css", value: `[name="${cssAttrEscape(candidate.name)}"]` });

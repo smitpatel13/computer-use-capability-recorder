@@ -15,14 +15,23 @@ export async function discover({ goal, target, out, llm = "offline", headless = 
   const transcript = [];
   try {
     logger.event("discovery.started", { goal, target, llm });
+    let completed = false;
     for (let step = 0; step < 12; step++) {
       const observation = await surface.observe();
       logger.event("agent.observe", { step, observation });
+      if (isTerminalObservation(observation)) {
+        completed = true;
+        logger.event("agent.goal_reached", { step, url: observation.url });
+        break;
+      }
       const decision = normalizeDecision(await planner.decide({ goal, target, observation }));
       if (decision.type === "navigate" && !decision.url) decision.url = target;
       transcript.push({ observation, decision });
       logger.event("agent.decide", { step, decision });
-      if (decision.type === "done") break;
+      if (decision.type === "done") {
+        completed = true;
+        break;
+      }
       if (decision.type === "escalate") {
         await handoff.request({ surface, reason: decision.reason, capability: "discovery", stepId: `step-${step}` });
         break;
@@ -30,6 +39,11 @@ export async function discover({ goal, target, out, llm = "offline", headless = 
       await surface.act(decision);
     }
     await logger.screenshot(surface.page, "discovery-final.png");
+    if (!completed) {
+      const observation = await surface.observe();
+      logger.event("discovery.incomplete", { observation });
+      throw new Error("Discovery did not reach a terminal success state; no capability artifact was saved.");
+    }
     const artifact = memberBalanceArtifact({ targetUrl: target });
     artifact.provenance = {
       discoveryRunId: logger.runId,
@@ -45,4 +59,12 @@ export async function discover({ goal, target, out, llm = "offline", headless = 
   } finally {
     await surface.stop();
   }
+}
+
+function isTerminalObservation(observation) {
+  return (
+    observation.text.includes("Member Details") ||
+    observation.text.includes("No member found") ||
+    observation.text.includes("Operator approval required")
+  );
 }

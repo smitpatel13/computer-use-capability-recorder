@@ -9,3 +9,11 @@ test("normalizes raw observed controls into locator candidates", () => {
     { kind: "label", value: "memberId" }
   ]);
 });
+
+test("expands click label candidates into button-friendly locators", () => {
+  assert.deepEqual(normalizeTargetCandidates({ candidates: [{ kind: "label", value: "Search" }] }, "click"), [
+    { kind: "role", role: "button", name: "Search" },
+    { kind: "text", value: "Search" },
+    { kind: "label", value: "Search" }
+  ]);
+});
