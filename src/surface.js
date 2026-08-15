@@ -79,10 +79,11 @@ export class BrowserSurface {
   }
 
   locatorFor(candidate) {
-    if (candidate.kind === "label") return this.page.getByLabel(candidate.value);
-    if (candidate.kind === "role") return this.page.getByRole(candidate.role, { name: candidate.name });
-    if (candidate.kind === "text") return this.page.getByText(candidate.value);
-    if (candidate.kind === "css") return this.page.locator(candidate.value);
+    const value = candidate.value ?? candidate.label ?? candidate.name ?? candidate.text ?? candidate.selector;
+    if (candidate.kind === "label") return this.page.getByLabel(value);
+    if (candidate.kind === "role") return this.page.getByRole(candidate.role, { name: value });
+    if (candidate.kind === "text") return this.page.getByText(value);
+    if (candidate.kind === "css") return this.page.locator(value);
     throw new Error(`Unknown locator candidate: ${candidate.kind}`);
   }
 
@@ -118,14 +119,16 @@ export function normalizeTargetCandidates(target = {}, actionType) {
   return (target.candidates || [target]).flatMap((candidate) => {
     if (!candidate || typeof candidate !== "object") return [];
     if (candidate.kind) {
+      const value = candidate.value ?? candidate.label ?? candidate.name ?? candidate.text ?? candidate.selector;
+      const canonical = { ...candidate, value };
       if (actionType === "click" && candidate.kind === "label") {
         return [
-          { kind: "role", role: "button", name: candidate.value },
-          { kind: "text", value: candidate.value },
-          candidate
+          { kind: "role", role: "button", name: value },
+          { kind: "text", value },
+          canonical
         ];
       }
-      return [candidate];
+      return [canonical];
     }
     const normalized = [];
     if (candidate.id) normalized.push({ kind: "css", value: `#${cssEscape(candidate.id)}` });

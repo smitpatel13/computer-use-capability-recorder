@@ -17,3 +17,9 @@ test("expands click label candidates into button-friendly locators", () => {
     { kind: "label", value: "Search" }
   ]);
 });
+
+test("canonicalizes model locator aliases", () => {
+  assert.deepEqual(normalizeTargetCandidates({ candidates: [{ kind: "label", label: "Member ID" }] }, "type"), [
+    { kind: "label", label: "Member ID", value: "Member ID" }
+  ]);
+});
