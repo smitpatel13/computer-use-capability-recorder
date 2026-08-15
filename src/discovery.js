@@ -4,7 +4,7 @@ import { memberBalanceArtifact } from "./artifact-schema.js";
 import { DEFAULT_POLICY } from "./config.js";
 import { RunLogger, newRunId } from "./logger.js";
 import { BrowserSurface } from "./surface.js";
-import { OfflinePlanner, OpenAIPlanner } from "./llm.js";
+import { OfflinePlanner, OpenAIPlanner, normalizeDecision } from "./llm.js";
 import { HandoffManager } from "./handoff.js";
 
 export async function discover({ goal, target, out, llm = "offline", headless = true }) {
@@ -18,7 +18,7 @@ export async function discover({ goal, target, out, llm = "offline", headless = 
     for (let step = 0; step < 12; step++) {
       const observation = await surface.observe();
       logger.event("agent.observe", { step, observation });
-      const decision = await planner.decide({ goal, target, observation });
+      const decision = normalizeDecision(await planner.decide({ goal, target, observation }));
       if (decision.type === "navigate" && !decision.url) decision.url = target;
       transcript.push({ observation, decision });
       logger.event("agent.decide", { step, decision });

@@ -39,6 +39,22 @@ export class OfflinePlanner {
   }
 }
 
+export function normalizeDecision(decision) {
+  if (!decision || typeof decision !== "object") {
+    return { type: "escalate", reason: "Planner returned a non-object decision." };
+  }
+  if (decision.type) return decision;
+  for (const type of ["navigate", "type", "click", "done", "escalate"]) {
+    if (decision[type] && typeof decision[type] === "object") {
+      return { type, ...decision[type] };
+    }
+  }
+  return {
+    type: "escalate",
+    reason: `Planner returned an unsupported decision shape: ${JSON.stringify(decision).slice(0, 300)}`
+  };
+}
+
 export class OpenAIPlanner {
   constructor({ apiKey = process.env.OPENAI_API_KEY, model = process.env.OPENAI_MODEL || "gpt-5-mini" } = {}) {
     this.apiKey = apiKey;
@@ -83,6 +99,6 @@ export class OpenAIPlanner {
     if (!response.ok) throw new Error(`OpenAI planner failed: ${response.status} ${await response.text()}`);
     const json = await response.json();
     const text = json.output_text || json.output?.flatMap((o) => o.content || []).map((c) => c.text).join("");
-    return JSON.parse(text);
+    return normalizeDecision(JSON.parse(text));
   }
 }
